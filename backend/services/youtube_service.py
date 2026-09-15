@@ -1,4 +1,9 @@
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import (
+    NoTranscriptFound,
+    TranscriptsDisabled,
+    VideoUnavailable,
+    YouTubeTranscriptApi,
+)
 
 
 def extract_video_id(url: str) -> str:
@@ -26,8 +31,29 @@ def get_transcript(video_id: str) -> str:
 
     api = YouTubeTranscriptApi()
 
-    transcript = api.fetch(video_id)
+    try:
+        transcript = api.fetch(video_id)
+    except TranscriptsDisabled as error:
+        raise ValueError(
+            "This video has captions disabled. Please choose a video with captions."
+        ) from error
+    except NoTranscriptFound as error:
+        raise ValueError(
+            "This video does not have an available caption transcript. "
+            "Please choose another video."
+        ) from error
+    except VideoUnavailable as error:
+        raise ValueError(
+            "This YouTube video is unavailable or private."
+        ) from error
 
-    return " ".join(
+    text = " ".join(
         snippet.text for snippet in transcript
     )
+
+    if not text.strip():
+        raise ValueError(
+            "This video has no caption text. Please choose a video with captions."
+        )
+
+    return text

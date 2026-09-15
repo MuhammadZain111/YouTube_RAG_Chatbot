@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
@@ -15,6 +17,7 @@ from services.rag_service import (
 
 
 app = FastAPI(title="YouTube Chatbot API")
+logger = logging.getLogger(__name__)
 
 
 # --------------------------------------------------
@@ -73,7 +76,20 @@ def index_video(request: IndexRequest):
                 "Could not extract a valid YouTube video ID."
             )
 
-        transcript = get_transcript(video_id)
+        try:
+            transcript = get_transcript(video_id)
+        except ValueError:
+            raise
+        except Exception as error:
+            logger.exception(
+                "Failed to retrieve transcript for video %s: %s",
+                video_id,
+                error,
+            )
+            raise ValueError(
+                "Could not retrieve a transcript for this video. "
+                "Make sure captions are available and try another video."
+            ) from error
 
         if not transcript:
             raise ValueError(
@@ -102,10 +118,12 @@ def index_video(request: IndexRequest):
             detail=str(error),
         ) from error
 
-    except Exception:
+    except Exception as error:
+        logger.exception("Unexpected error while indexing video: %s", error)
         raise HTTPException(
             status_code=500,
-            detail="An error occurred while indexing the video.",
+            detail="An unexpected error occurred while indexing the video. "
+            "Check the backend terminal logs for details.",
         )
 
 
