@@ -4,11 +4,8 @@ from typing import Dict, Any
 
 from dotenv import load_dotenv
 
-from langchain_huggingface import (
-    ChatHuggingFace,
-    HuggingFaceEmbeddings,
-    HuggingFaceEndpoint,
-)
+from huggingface_hub import InferenceClient
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
 
 from langchain_community.vectorstores import FAISS
@@ -97,23 +94,20 @@ def get_models():
         )
 
     try:
-        logger.info("Initializing Hugging Face embeddings.")
+        logger.info("Initializing remote Hugging Face embeddings.")
 
-        embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
-        )
-
-        logger.info("Initializing Hugging Face chat model.")
-
-        llm_endpoint = HuggingFaceEndpoint(
-            repo_id="HuggingFaceH4/zephyr-7b-beta",
-            task="conversational",
-            max_new_tokens=512,
-            temperature=0.1,
+        embeddings = HuggingFaceEndpointEmbeddings(
+            model="sentence-transformers/all-MiniLM-L6-v2",
+            task="feature-extraction",
             huggingfacehub_api_token=hf_token,
         )
 
-        llm = ChatHuggingFace(llm=llm_endpoint)
+        logger.info("Initializing Hugging Face chat client.")
+
+        llm = InferenceClient(
+            model="HuggingFaceH4/zephyr-7b-beta",
+            token=hf_token,
+        )
 
         return embeddings, llm
 
@@ -264,14 +258,25 @@ def ask_question(video_id: str, question: str):
 
         _, llm = get_models()
 
-        chain = prompt | llm | StrOutputParser()
-
-        answer = chain.invoke(
-            {
-                "context": context,
-                "question": question,
-            }
+        response = llm.chat_completion(
+            messages=[
+                {
+                    "role": "system",
+                    "content": prompt.format(
+                        context=context,
+                        question=question,
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": question,
+                },
+            ],
+            max_tokens=512,
+            temperature=0.1,
         )
+
+        answer = response.choices[0].message.content or ""
 
         if not answer or not answer.strip():
             raise QuestionAnsweringError(
