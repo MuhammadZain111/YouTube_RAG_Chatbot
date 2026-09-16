@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Git
+.git
+.gitignore
+
+# Build output
+dist
+build
+.next
+
+# Tests and coverage
+coverage
+.nyc_output
+
+# OS and editor files
+.DS_Store
+.vscode
+.idea
+
+# Documentation
+README.md
