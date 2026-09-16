@@ -3,6 +3,8 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
+from fastapi.middleware.cors import CORSMiddleware
+
 
 from services.youtube_service import (
     extract_video_id,
@@ -15,6 +17,10 @@ from services.rag_service import (
     RAGServiceError,
 )
 
+load_dotenv()
+
+
+FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 app = FastAPI(title="YouTube Chatbot API")
 logger = logging.getLogger(__name__)
@@ -27,8 +33,7 @@ logger = logging.getLogger(__name__)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
+        FRONTEND_URL,
     ],
     allow_credentials=True,
     allow_methods=["*"],
