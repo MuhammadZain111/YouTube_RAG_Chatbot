@@ -23,8 +23,6 @@ load_dotenv()
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
-
-
 FRONTEND_URL = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
 
 
@@ -37,15 +35,26 @@ logger.info("FRONTEND_URL: %r", FRONTEND_URL)
 
 
 
+allowed_origins = [
+    "https://youtuberagchatbotvoxai.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+
+
+if FRONTEND_URL and FRONTEND_URL not in allowed_origins:
+    allowed_origins.append(FRONTEND_URL)
+
+logger.warning("FRONTEND_URL: %r", FRONTEND_URL)
+logger.warning("Allowed origins: %r", allowed_origins)
 # --------------------------------------------------
 # CORS Configuration
 # --------------------------------------------------
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        FRONTEND_URL
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
