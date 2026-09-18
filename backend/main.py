@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
+import os
 
 from services.youtube_service import (
     extract_video_id,
@@ -19,7 +19,6 @@ from services.rag_service import (
 )
 
 load_dotenv()
-
 
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
