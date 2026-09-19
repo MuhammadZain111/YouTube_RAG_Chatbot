@@ -19,9 +19,7 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">
-          YouTube AI Chatbot
-        </h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">YouTube AI Chatbot</h1>
         <p className="mt-2 text-sm text-slate-500">
           Paste a YouTube video and ask questions using LangChain.
         </p>
@@ -31,10 +29,7 @@ export default function Home() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div>
-          <VideoPlayer
-            videoId={video?.videoId}
-            title={video?.title}
-          />
+          <VideoPlayer videoId={video?.videoId} title={video?.title} />
 
           {video && (
             <VideoInfo

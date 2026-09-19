@@ -1,12 +1,5 @@
 import { NavLink } from "react-router-dom";
-import {
-  Home,
-  History,
-  Bookmark,
-  Settings, 
-  Play,
-  Bot,
-} from "lucide-react";
+import { Home, History, Bookmark, Settings, Play, Bot } from "lucide-react";
 
 const navigation = [
   { name: "Home", path: "/", icon: Home },
@@ -14,7 +7,6 @@ const navigation = [
   { name: "Saved Videos", path: "/saved", icon: Bookmark },
   { name: "Settings", path: "/settings", icon: Settings },
 ];
-
 
 export default function Sidebar() {
   return (

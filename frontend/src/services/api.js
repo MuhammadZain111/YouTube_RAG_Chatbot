@@ -1,5 +1,4 @@
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export async function indexVideo(youtubeUrl) {
   let response;
@@ -16,7 +15,7 @@ export async function indexVideo(youtubeUrl) {
     });
   } catch {
     throw new Error(
-      "Cannot connect to the backend. Start it with: cd backend && ./venv/bin/uvicorn main:app --reload"
+      "Cannot connect to the backend. Start it with: cd backend && ./venv/bin/uvicorn main:app --reload",
     );
   }
 
