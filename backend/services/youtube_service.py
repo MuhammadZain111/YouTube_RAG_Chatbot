@@ -43,12 +43,15 @@ def get_transcript(video_id: str) -> str:
     #    raise RuntimeError("Webshare proxy credentials are missing")
 
 
-    api = YouTubeTranscriptApi(
-        proxy_config=WebshareProxyConfig(
-        # proxy_username=username,
-        # proxy_password=password,
-    )
-    )
+    # api = YouTubeTranscriptApi(
+    #     # proxy_config=WebshareProxyConfig(
+    #     # proxy_username=username,
+    #     # proxy_password=password,
+    # )
+    # )
+
+    api = YouTubeTranscriptApi()
+
 
     try:
         transcript = api.fetch(video_id)
