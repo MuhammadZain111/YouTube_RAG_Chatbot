@@ -8,10 +8,12 @@ from huggingface_hub import InferenceClient
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
 
+
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+
 
 load_dotenv()
 

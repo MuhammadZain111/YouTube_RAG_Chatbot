@@ -28,8 +28,6 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "").strip().rstrip("/")
 app = FastAPI(title="YouTube Chatbot API")
 logger = logging.getLogger(__name__)
 
-
-
 logger.info("FRONTEND_URL: %r", FRONTEND_URL)
 
 
@@ -236,19 +234,20 @@ def chat(request: ChatRequest):
         return result
 
     except RAGServiceError as error:
-        raise HTTPException(
-            status_code=400,
-            detail=str(error),
-        ) from error
+        logger.exception("RAG service error during chat")
+        raise HTTPException(status_code=400, detail=str(error)) from error
 
     except ValueError as error:
-        raise HTTPException(
-            status_code=400,
-            detail=str(error),
-        ) from error
+        logger.exception("Validation error during chat")
+        raise HTTPException(status_code=400, detail=str(error)) from error
 
-    except Exception:
+    except Exception as error:
+        logger.exception("Unexpected error while generating answer")
         raise HTTPException(
             status_code=500,
             detail="An error occurred while generating the answer.",
-        )
+        ) from error
+    
+
+
+
